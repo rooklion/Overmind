@@ -362,12 +362,15 @@ export class Pathing {
 	/* Default matrix for a room, setting impassable structures and constructionSites to impassible */
 	static getDefaultMatrix(room: Room): CostMatrix {
 		return $.costMatrix(room.name, MatrixTypes.default, () => {
-			let matrix = new PathFinder.CostMatrix();
+			let matrix = new PathFinder.CostMatrix();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 			// Set passability of structure positions
 			let impassibleStructures: Structure[] = [];
 			_.forEach(room.find(FIND_STRUCTURES), (s: Structure) => {
 				if (s.structureType == STRUCTURE_ROAD) {
 					matrix.set(s.pos.x, s.pos.y, 1);
+				} else if (s.structureType == STRUCTURE_PORTAL) {
+					//local edit to prevent portal movement at all
+					matrix.set(s.pos.x, s.pos.y, 255);
 				} else if (!s.isWalkable) {
 					impassibleStructures.push(s);
 				}

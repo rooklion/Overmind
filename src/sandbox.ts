@@ -4,7 +4,8 @@ import {log} from './console/log';
 
 export function sandbox() {
 	try {
-
+		//_.forEach(Game.constructionSites, s => s.remove());
+		//Memory.constructionSites = {};
 	} catch (e) {
 		log.error(e);
 	}

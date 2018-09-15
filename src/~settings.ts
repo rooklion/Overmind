@@ -11,7 +11,8 @@ export const MUON = 'Muon';
 /**
  * Your username - you shouldn't need to change this.
  */
-export const MY_USERNAME: string = getUsername();
+//export const MY_USERNAME: string = getUsername();
+export const MY_USERNAME = 'Sarrick';
 
 /**
  * Enable this to build from source including screeps-profiler. (This is separate from Overmind-Profiler.)
