@@ -14,6 +14,8 @@ interface SkirmishAnalysis {
 	isApproaching: boolean,
 }
 
+const DEBUG = false;
+
 export class GoalFinder {
 
 	// Standard set of goals for fighting small groups of hostiles (not optimal for larger fights)
@@ -95,18 +97,24 @@ export class GoalFinder {
 			}
 		}
 
+		if (DEBUG) {
+			log.debug(`Report for ${creep.name}:`, JSON.stringify(analysis));
+			log.debug(`Approach for ${creep.name}:`, JSON.stringify(approach));
+			log.debug(`Avoid for ${creep.name}:`, JSON.stringify(avoid));
+		}
+
 		return {approach, avoid};
 	}
 
-	static retreatGoals(creep: CombatZerg): { approach: PathFinderGoal[], avoid: PathFinderGoal[] } {
+	static retreatGoals(room: Room): { approach: PathFinderGoal[], avoid: PathFinderGoal[] } {
 		let avoid: PathFinderGoal[] = [];
-		for (let hostile of creep.room.hostiles) {
+		for (let hostile of room.hostiles) {
 			if (CombatIntel.getAttackPotential(hostile) > 0 || CombatIntel.getRangedAttackPotential(hostile) > 0) {
 				avoid.push({pos: hostile.pos, range: 10});
 			}
 		}
-		if (creep.room.owner && !creep.room.my) {
-			for (let tower of creep.room.towers) {
+		if (room.owner && !room.my) {
+			for (let tower of room.towers) {
 				avoid.push({pos: tower.pos, range: 50});
 			}
 		}
