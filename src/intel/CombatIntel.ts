@@ -118,12 +118,14 @@ export class CombatIntel {
 
 		// TODO
 		let exitPositions: RoomPosition[] = [];
+		let terrainObj = Game.map.getRoomTerrain(this.room.name);
 		for (let x = 0; x < 50; x += 49) {
 			for (let y = 0; y < 50; y++) {
 				if (x !== 0 && y !== 0 && x !== 49 && y !== 49) {
 					continue;
 				}
-				if (Game.map.getTerrainAt(x, y, this.room.name) === 'wall') {
+				//if (Game.map.getTerrainAt(x, y, this.room.name) === 'wall') {
+				if (terrainObj.get(x, y) == TERRAIN_MASK_WALL) {
 					continue;
 				}
 				matrix.set(x, y, 0xff);
@@ -180,7 +182,7 @@ export class CombatIntel {
 	}
 
 	/* Fallback is a location on the other side of the nearest exit the directive is placed at */
-	static getFallbackFrom(pos: RoomPosition, fallbackDistance = 2): RoomPosition {
+	static getFallbackFrom(pos: RoomPosition, fallbackDistance = 4): RoomPosition {
 		let {x, y, roomName} = pos;
 		let rangesToExit = [[x, 'left'], [49 - x, 'right'], [y, 'top'], [49 - y, 'bottom']];
 		let [range, direction] = _.first(_.sortBy(rangesToExit, pair => pair[0]));

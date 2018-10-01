@@ -70,9 +70,11 @@ function applyDistanceTransform(foregroundPixels: CostMatrix, oob = 255): CostMa
 // Compute a cost matrix for walkable pixels in a room
 function walkablePixelsForRoom(roomName: string): CostMatrix {
 	var costMatrix = new PathFinder.CostMatrix();
+	let terrainObj = Game.map.getRoomTerrain(roomName);
 	for (var y = 0; y < 50; ++y) {
 		for (var x = 0; x < 50; ++x) {
-			if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+			//if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+			if (terrainObj.get(x, y) != TERRAIN_MASK_WALL) {
 				costMatrix.set(x, y, 1);
 			}
 		}
@@ -81,34 +83,49 @@ function walkablePixelsForRoom(roomName: string): CostMatrix {
 }
 
 function wallOrAdjacentToExit(x: number, y: number, roomName: string): boolean {
+	let terrainObj = Game.map.getRoomTerrain(roomName);
 	if (1 < x && x < 48 && 1 < y && y < 48) {
-		return Game.map.getTerrainAt(x, y, roomName) == 'wall';
+		//return Game.map.getTerrainAt(x, y, roomName) == 'wall';
+		return terrainObj.get(x, y) == TERRAIN_MASK_WALL;
 	}
 	if (0 == x || 0 == y || 49 == x || 49 == y) {
 		return true;
 	}
-	if (Game.map.getTerrainAt(x, y, roomName) == 'wall') {
+	//if (Game.map.getTerrainAt(x, y, roomName) == 'wall') {
+	if (terrainObj.get(x, y) == TERRAIN_MASK_WALL) {
 		return true;
 	}
 	// If we've reached here then position is a walkable neighbor to an exit tile
 	let A, B, C;
 	if (x == 1) {
-		A = Game.map.getTerrainAt(0, y - 1, roomName);
-		B = Game.map.getTerrainAt(0, y, roomName);
-		C = Game.map.getTerrainAt(0, y + 1, roomName);
+		//A = Game.map.getTerrainAt(0, y - 1, roomName);
+		//B = Game.map.getTerrainAt(0, y, roomName);
+		//C = Game.map.getTerrainAt(0, y + 1, roomName);
+		A = terrainObj.get(0, y - 1);
+		B = terrainObj.get(0, y);
+		C = terrainObj.get(0, y + 1);
 	} else if (x == 48) {
-		A = Game.map.getTerrainAt(49, y - 1, roomName);
-		B = Game.map.getTerrainAt(49, y, roomName);
-		C = Game.map.getTerrainAt(49, y + 1, roomName);
+		//A = Game.map.getTerrainAt(49, y - 1, roomName);
+		//B = Game.map.getTerrainAt(49, y, roomName);
+		//C = Game.map.getTerrainAt(49, y + 1, roomName);
+		A = terrainObj.get(49, y - 1);
+		B = terrainObj.get(49, y);
+		C = terrainObj.get(49, y + 1);
 	}
 	if (y == 1) {
-		A = Game.map.getTerrainAt(x - 1, 0, roomName);
-		B = Game.map.getTerrainAt(x, 0, roomName);
-		C = Game.map.getTerrainAt(x + 1, 0, roomName);
+		//A = Game.map.getTerrainAt(x - 1, 0, roomName);
+		//B = Game.map.getTerrainAt(x, 0, roomName);
+		//C = Game.map.getTerrainAt(x + 1, 0, roomName);
+		A = terrainObj.get(x - 1, 0);
+		B = terrainObj.get(x, 0);
+		C = terrainObj.get(x + 1, 0);
 	} else if (y == 48) {
-		A = Game.map.getTerrainAt(x - 1, 49, roomName);
-		B = Game.map.getTerrainAt(x, 49, roomName);
-		C = Game.map.getTerrainAt(x + 1, 49, roomName);
+		//A = Game.map.getTerrainAt(x - 1, 49, roomName);
+		//B = Game.map.getTerrainAt(x, 49, roomName);
+		//C = Game.map.getTerrainAt(x + 1, 49, roomName);
+		A = terrainObj.get(x - 1, 49);
+		B = terrainObj.get(x, 49);
+		C = terrainObj.get(x + 1, 49);
 	}
 	return !(A == 'wall' && B == 'wall' && C == 'wall');
 }

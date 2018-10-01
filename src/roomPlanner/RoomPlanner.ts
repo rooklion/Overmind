@@ -397,7 +397,9 @@ export class RoomPlanner {
 				continue;
 			}
 			for (let pos of this.map[structureType]) {
-				if (Game.map.getTerrainAt(pos) == 'wall') {
+				let terrainObj = Game.map.getRoomTerrain(pos.roomName);
+				//if (Game.map.getTerrainAt(pos) == 'wall') {
+				if (terrainObj.get(pos.x, pos.y) == TERRAIN_MASK_WALL)
 					return pos;
 				}
 			}

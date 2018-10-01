@@ -342,16 +342,21 @@ export class Pathing {
 	static getTerrainMatrix(roomName: string, costs: TerrainCosts = {plainCost: 1, swampCost: 5}): CostMatrix {
 		return $.costMatrix(roomName, `terrain:${costs.plainCost}:${costs.swampCost}`, () => {
 			let matrix = new PathFinder.CostMatrix();
+			let terrainObj = Game.map.getRoomTerrain(roomName);
 			for (let y = 0; y < 50; ++y) {
 				for (let x = 0; x < 50; ++x) {
-					switch (Game.map.getTerrainAt(x, y, roomName)) {
-						case 'plain':
+					//switch (Game.map.getTerrainAt(x, y, roomName)) {
+					switch (terrainObj.get(x, y)) {
+						//case 'plain':
+						case 0: //No TERRAIN_MASK_PLAIN exists
 							matrix.set(x, y, costs.plainCost);
 							break;
-						case 'swamp':
+						//case 'swamp':
+						case TERRAIN_MASK_SWAMP:
 							matrix.set(x, y, costs.swampCost);
 							break;
-						case 'wall':
+						//case 'wall':
+						case TERRAIN_MASK_WALL:
 							matrix.set(x, y, 0xff);
 							break;
 					}
@@ -542,7 +547,9 @@ export class Pathing {
 	static blockImpassibleTerrain(matrix: CostMatrix, roomName: string) {
 		for (let y = 0; y < 50; ++y) {
 			for (let x = 0; x < 50; ++x) {
-				if (Game.map.getTerrainAt(x, y, roomName) == 'wall') {
+				let terrainObj = Game.map.getRoomTerrain(roomName)
+				//if (Game.map.getTerrainAt(x, y, roomName) == 'wall') {
+				if (terrainObj.get(x, y) == TERRAIN_MASK_WALL) {
 					matrix.set(x, y, 0xff);
 				}
 			}
@@ -579,13 +586,16 @@ export class Pathing {
 			for (let dy = -range; dy <= range; dy++) {
 				let y = pos.y + dy;
 				if (y < 0 || y > 49) continue;
-				let terrain = Game.map.getTerrainAt(x, y, pos.roomName);
-				if (terrain === 'wall') {
+				//let terrain = Game.map.getTerrainAt(x, y, pos.roomName);
+				let terrainObj = Game.map.getRoomTerrain(pos.roomName);
+				//if (terrain === 'wall') {
+				if (terrainObj.get(x, y) == TERRAIN_MASK_WALL)
 					continue;
 				}
 				let currentCost = matrix.get(x, y);
 				if (currentCost === 0) {
-					if (terrain === 'plain') {
+					//if (terrain === 'plain') {
+					if (terrainObj.get(x, y) != TERRAIN_MASK_SWAMP)
 						currentCost += 2;
 					} else {
 						currentCost += 10;
@@ -611,16 +621,19 @@ export class Pathing {
 	}
 
 	static setExitCosts(matrix: CostMatrix, roomName: string, cost: number, rangeToEdge = 0) {
+		let terrainObj = Game.map.getRoomTerrain(roomName);
 		for (let x = rangeToEdge; x < 50 - rangeToEdge; x += 49 - rangeToEdge * 2) {
 			for (let y = rangeToEdge; y < 50 - rangeToEdge; y++) {
-				if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+				//if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+				if (terrainObj.get(x, y) != TERRAIN_MASK_WALL) {
 					matrix.set(x, y, cost);
 				}
 			}
 		}
 		for (let x = rangeToEdge; x < 50 - rangeToEdge; x++) {
 			for (let y = rangeToEdge; y < 50 - rangeToEdge; y += 49 - rangeToEdge * 2) {
-				if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+				//if (Game.map.getTerrainAt(x, y, roomName) != 'wall') {
+				if (terrainObj.get(x, y) != TERRAIN_MASK_WALL) {
 					matrix.set(x, y, cost);
 				}
 			}
@@ -871,7 +884,9 @@ export class Pathing {
 					}
 					x = 25 + dx;
 					y = 25 + dy;
-					if (Game.map.getTerrainAt(x, y, roomName) !== 'wall') {
+					let terrainObj = Game.map.getRoomTerrain(roomName);
+					if (terrainObj.get(x, y) != TERRAIN_MASK_WALL) {
+					//if (Game.map.getTerrainAt(x, y, roomName) !== 'wall') {
 						return new RoomPosition(x, y, roomName);
 					}
 				}
