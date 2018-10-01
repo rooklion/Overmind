@@ -400,7 +400,9 @@ export abstract class Overlord {
 
 	private getBoostLabFor(creep: Zerg): StructureLab | undefined {
 		if (!creep.memory.boostLab) {
-			let closestLab = creep.pos.findClosestByRange(this.colony.labs);
+			//let closestLab = creep.pos.findClosestByRange(this.colony.labs);
+			let closestLab: any;
+			if (Overmind.colonies[creep.pos.roomName]) closestLab = creep.pos.findClosestByRange(Overmind.colonies[creep.pos.roomName].labs);
 			if (closestLab) {
 				creep.memory.boostLab = closestLab.id;
 				return closestLab;
@@ -434,16 +436,23 @@ export abstract class Overlord {
 			if (boost) {
 				let boostLab = this.getBoostLabFor(creep);
 				if (boostLab) {
-					if (this.colony.evolutionChamber.queuePosition(creep, boostLab) == 0) {
-						log.info(`${this.colony.room.print}: boosting ${creep.print} with ${boost}!`);
-						creep.task = Tasks.getBoosted(boostLab, boost);
-					} else {
-						// Approach the lab but don't attempt to get boosted
-						if (creep.pos.getRangeTo(boostLab) > 2) {
-							creep.goTo(boostLab, {range: 2});
+					let boostColony = Overmind.colonies[boostLab.pos.roomName];
+					if (boostColony) {
+						//if (this.colony.evolutionChamber.queuePosition(creep, boostLab) == 0) {
+						if (boostColony.evolutionChamber.queuePosition(creep, boostLab) == 0) {
+							log.info(`${boostColony.room.print}: boosting ${creep.print} with ${boost}!`);
+							creep.task = Tasks.getBoosted(boostLab, boost);
 						} else {
-							creep.park();
+							// Approach the lab but don't attempt to get boosted
+							if (creep.pos.getRangeTo(boostLab) > 2) {
+								creep.goTo(boostLab, { range: 2 });
+							} else {
+								creep.park();
+							}
 						}
+					}
+					else {
+						log.debug("No boost colony found.")
 					}
 				}
 			}

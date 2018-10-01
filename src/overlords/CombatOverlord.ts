@@ -11,7 +11,7 @@ export abstract class CombatOverlord extends Overlord {
 	constructor(initializer: OverlordInitializer, name: string, priority: number, requiredRCL: number) {
 		super(initializer, name, priority);
 		this.requiredRCL = requiredRCL;
-		this.spawnGroup = new SpawnGroup(this, {requiredRCL: this.requiredRCL});
+		this.spawnGroup = new SpawnGroup(this, { requiredRCL: this.requiredRCL, maxPathDistance: initializer.memory.maxPathLength});
 	}
 
 	// Standard sequence of actions for running combat creeps

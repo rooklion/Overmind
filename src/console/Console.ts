@@ -6,6 +6,7 @@ import {asciiLogoSmall} from '../visuals/logos';
 import {log} from './log';
 import {alignedNewline, bullet} from '../utilities/stringConstants';
 import {DEFAULT_OVERMIND_SIGNATURE, MY_USERNAME, USE_PROFILER} from '../~settings';
+import {Pathing} from '../movement/Pathing';
 
 export class OvermindConsole {
 
@@ -32,8 +33,52 @@ export class OvermindConsole {
 		global.removeFlagsByColor = this.removeFlagsByColor;
 		global.removeErrantFlags = this.removeErrantFlags;
 		global.deepCleanMemory = this.deepCleanMemory;
+
+		//local functions
+		global.clearConSites = this.clearConSites;
+		global.clearFlags = this.clearFlags;
+		global.getPathLength = this.getPathLength;
 	}
 
+	// Local functions =================================================================================================
+	static clearConSites(room?: string) {
+		if (room) {
+			if (Game.rooms[room]) {
+				_.forEach(Game.constructionSites, s =>
+				{
+					if (s.pos.roomName == room) {
+						if (Memory.constructionSites[s.id])
+							delete Memory.constructionSites[s.id];
+						s.remove();
+					}
+				});
+			} else {
+				log.alert("No room found in memory with roomName: " + room);
+			}
+		} else {
+			_.forEach(Game.constructionSites, s => s.remove());
+			Memory.constructionSites = {};
+			
+		}
+		return "Done."
+	}
+
+	static clearFlags(room: string) {
+		_.forEach(Game.flags, f => {
+			if (f.pos.roomName == room) {
+				f.remove();
+			}
+		});
+		return "Done."
+	}
+
+	static getPathLength(pos1: RoomPosition, pos2: RoomPosition, preferHighway: boolean = false) {
+		let path = Pathing.findPath(pos1, pos2, {preferHighway: preferHighway});
+		if (path.path) {
+			return path.path.length;
+		}
+		return "No path found.";
+	}
 
 	// Help, information, and operational changes ======================================================================
 

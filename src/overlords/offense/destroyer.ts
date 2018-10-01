@@ -90,7 +90,7 @@ export class DestroyerOverlord extends Overlord {
 			} else {
 				// Move to room and then perform attacking actions
 				if (!attacker.inSameRoomAs(this)) {
-					Movement.pairwiseMove(attacker, healer, this.pos);
+					Movement.pairwiseMove(attacker, healer, this.pos, { preferHighway: true });
 				} else {
 					this.attackActions(attacker, healer);
 				}
