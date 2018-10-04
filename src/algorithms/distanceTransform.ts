@@ -127,7 +127,8 @@ function wallOrAdjacentToExit(x: number, y: number, roomName: string): boolean {
 		B = terrainObj.get(x, 49);
 		C = terrainObj.get(x + 1, 49);
 	}
-	return !(A == 'wall' && B == 'wall' && C == 'wall');
+	//return !(A == 'wall' && B == 'wall' && C == 'wall');
+	return !(A == TERRAIN_MASK_WALL && B == TERRAIN_MASK_WALL && C == TERRAIN_MASK_WALL);
 }
 
 // Compute positions where you can build movement-blocking structures in a room

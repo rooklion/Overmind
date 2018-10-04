@@ -180,7 +180,7 @@ RoomPosition.prototype.isWalkable = function (ignoreCreeps = false): boolean {
 	let test: RoomPosition;
 	let terrainObj = Game.map.getRoomTerrain(this.roomName);
 	//if (Game.map.getTerrainAt(this) == 'wall') return false;
-	if (terrainObj.get(this.x, test.y) == TERRAIN_MASK_WALL) return false;
+	if (terrainObj.get(this.x, this.y) == TERRAIN_MASK_WALL) return false;
 	if (this.isVisible) {
 		// Are there creeps?
 		if (ignoreCreeps == false && this.lookFor(LOOK_CREEPS).length > 0) return false;

@@ -589,13 +589,13 @@ export class Pathing {
 				//let terrain = Game.map.getTerrainAt(x, y, pos.roomName);
 				let terrainObj = Game.map.getRoomTerrain(pos.roomName);
 				//if (terrain === 'wall') {
-				if (terrainObj.get(x, y) == TERRAIN_MASK_WALL)
+				if (terrainObj.get(x, y) == TERRAIN_MASK_WALL) {
 					continue;
 				}
 				let currentCost = matrix.get(x, y);
 				if (currentCost === 0) {
 					//if (terrain === 'plain') {
-					if (terrainObj.get(x, y) != TERRAIN_MASK_SWAMP)
+					if (terrainObj.get(x, y) != TERRAIN_MASK_SWAMP) {
 						currentCost += 2;
 					} else {
 						currentCost += 10;
